@@ -4,9 +4,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Telegram Config
-  const BOT_TOKEN = '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE';
-  const ADMIN_ID = '1741528704';
+  // Telegram Config (Overrides via window object or Laravel env if provided)
+  const BOT_TOKEN = window.BOT_TOKEN || '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE';
+  const ADMIN_ID = window.ADMIN_ID || '1741528704';
 
   // 1. Initialize Telegram WebApp SDK if running inside Telegram
   const tg = window.Telegram?.WebApp;
@@ -36,8 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Helper function to send instant HTML message to Admin Telegram ID
-  async function sendToAdminTelegram(htmlText) {
+  // Helper function to send instant HTML message to Admin Telegram ID (Secure Proxy first)
+  async function sendToAdminTelegram(htmlText, payloadData) {
+    // 1. Try secure backend proxy first (Hides bot token from public JS)
+    try {
+      const proxyResponse = await fetch('/api/telegram/send-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadData || {})
+      });
+      if (proxyResponse.ok) {
+        return await proxyResponse.json();
+      }
+    } catch (e) {
+      console.log('Backend proxy endpoint offline, falling back to direct API');
+    }
+
+    // 2. Direct Telegram API call fallback (For static hosting)
     const endpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
     try {
       const response = await fetch(endpoint, {
@@ -308,8 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
       }
 
-      // Direct Telegram API Notification to Admin ID 1741528704
-      await sendToAdminTelegram(htmlText);
+      // Secure Backend Proxy Request
+      await sendToAdminTelegram(htmlText, { name, phone, service, note, tg_user: tgUserTag });
 
       if (tg) {
         try {
@@ -358,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ⏰ <b>Vaqt:</b> ${new Date().toLocaleString('uz-UZ')}
       `.trim();
 
-      await sendToAdminTelegram(htmlText);
+      await sendToAdminTelegram(htmlText, { name, phone, service: 'Direct Message', note: content, tg_user: tgUserTag });
 
       alert(`Xabaringiz adminga muvaffaqiyatli yuborildi! Tez orada javob beramiz.`);
 

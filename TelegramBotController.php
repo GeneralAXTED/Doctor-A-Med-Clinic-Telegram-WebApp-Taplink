@@ -7,9 +7,20 @@ use Illuminate\Support\Facades\Http;
 
 class TelegramBotController extends Controller
 {
-    private $botToken = '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE';
-    private $adminId = 1741528704;
-    private $webAppUrl = 'https://doctoramed.uz/doctora/';
+    private function getBotToken()
+    {
+        return config('services.telegram.bot_token', env('TELEGRAM_BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE'));
+    }
+
+    private function getAdminId()
+    {
+        return config('services.telegram.admin_id', env('TELEGRAM_ADMIN_ID', 1741528704));
+    }
+
+    private function getWebAppUrl()
+    {
+        return config('services.telegram.webapp_url', env('TELEGRAM_WEBAPP_URL', 'https://doctoramed.uz/doctora/'));
+    }
 
     /**
      * Webhook Handler Route
@@ -44,7 +55,7 @@ class TelegramBotController extends Controller
             $keyboard = [
                 'inline_keyboard' => [
                     [
-                        ['text' => '🏥 Doctor-A WebApp-ni ochish', 'web_app' => ['url' => $this->webAppUrl]]
+                        ['text' => '🏥 Doctor-A WebApp-ni ochish', 'web_app' => ['url' => $this->getWebAppUrl()]]
                     ],
                     [
                         ['text' => '💬 WhatsApp', 'url' => 'https://wa.me/998507841070'],
@@ -61,31 +72,60 @@ class TelegramBotController extends Controller
         }
 
         // 2. Handle Admin Reply to User
-        if ($userId == $this->adminId && isset($message['reply_to_message'])) {
+        if ($userId == $this->getAdminId() && isset($message['reply_to_message'])) {
             $replyTo = $message['reply_to_message'];
             $replyText = $replyTo['text'] ?? '';
 
             if (preg_match('/ID:\s*<code>(\d+)<\/code>/i', $replyText, $matches)) {
                 $targetId = $matches[1];
                 $this->sendMessage($targetId, "🏥 <b>Doctor-A Klinikasi Adminidan javob:</b>\n\n" . htmlspecialchars($text));
-                $this->sendMessage($this->adminId, "✅ Javobingiz foydalanuvchiga yetkazildi!");
+                $this->sendMessage($this->getAdminId(), "✅ Javobingiz foydalanuvchiga yetkazildi!");
                 return response()->json(['status' => 'OK']);
             }
         }
 
-        // 3. Direct Messages from Normal Users -> Forward to Admin ID 1741528704
-        if ($userId != $this->adminId) {
+        // 3. Direct Messages from Normal Users -> Forward to Admin ID
+        if ($userId != $this->getAdminId()) {
             $adminMsg = "📩 <b>YANGI MUROJAAT / XABAR:</b>\n"
                 . "👤 <b>Yuboruvchi:</b> {$firstName} {$lastName}\n"
                 . "📲 <b>Profil:</b> {$username}\n"
                 . "🆔 <b>ID:</b> <code>{$userId}</code>\n\n"
                 . "💬 <b>Xabar:</b>\n" . htmlspecialchars($text);
 
-            $this->sendMessage($this->adminId, $adminMsg);
+            $this->sendMessage($this->getAdminId(), $adminMsg);
             $this->sendMessage($chatId, "✅ Xabaringiz adminga yetkazildi. Tez orada javob beramiz!");
         }
 
         return response()->json(['status' => 'OK']);
+    }
+
+    /**
+     * Secure Proxy Endpoint for Frontend WebApp Form Submissions
+     * Endpoint: POST /api/telegram/send-booking
+     */
+    public function sendBookingNotification(Request $request)
+    {
+        $name = htmlspecialchars($request->input('name', 'Noma\'lum'));
+        $phone = htmlspecialchars($request->input('phone', 'Noma\'lum'));
+        $service = htmlspecialchars($request->input('service', 'Tanlanmadi'));
+        $note = htmlspecialchars($request->input('note', 'Mavjud emas'));
+        $tgUser = htmlspecialchars($request->input('tg_user', 'Mavjud emas'));
+
+        $htmlText = "🚨 <b>YANGI QABULGA YOZILISH ARIZASI (WebApp)</b> 🚨\n\n"
+            . "🏥 <b>Klinika:</b> Doctor-A Med Clinic\n"
+            . "👤 <b>Bemor:</b> {$name}\n"
+            . "📞 <b>Telefon:</b> <code>{$phone}</code>\n"
+            . "🩺 <b>Kerakli bo'lim:</b> <b>{$service}</b>\n"
+            . "📝 <b>Qo'shimcha izoh:</b> {$note}\n"
+            . "📲 <b>Telegram Profil:</b> {$tgUser}\n"
+            . "⏰ <b>Vaqt:</b> " . now()->format('Y-m-d H:i:s');
+
+        $response = $this->sendMessage($this->getAdminId(), $htmlText);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Ariza adminga muvaffaqiyatli yuborildi'
+        ]);
     }
 
     /**
@@ -95,7 +135,7 @@ class TelegramBotController extends Controller
     public function setWebhook()
     {
         $webhookUrl = url('/api/telegram/webhook');
-        $response = Http::get("https://api.telegram.org/bot{$this->botToken}/setWebhook", [
+        $response = Http::get("https://api.telegram.org/bot{$this->getBotToken()}/setWebhook", [
             'url' => $webhookUrl
         ]);
 
@@ -118,6 +158,6 @@ class TelegramBotController extends Controller
             $payload['reply_markup'] = $keyboard;
         }
 
-        return Http::post("https://api.telegram.org/bot{$this->botToken}/sendMessage", $payload);
+        return Http::post("https://api.telegram.org/bot{$this->getBotToken()}/sendMessage", $payload);
     }
 }
