@@ -8,9 +8,9 @@
 
 header('Content-Type: application/json');
 
-define('BOT_TOKEN', '8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg');
+define('BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE');
 define('ADMIN_ID', 1741528704);
-define('WEBAPP_URL', 'https://doctoramed.uz/');
+define('WEBAPP_URL', 'https://doctoramed.uz/doctora/');
 
 // Read raw JSON update from Telegram Webhook
 $content = file_get_contents("php://input");

@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // Telegram Config
-  const BOT_TOKEN = '8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg';
+  const BOT_TOKEN = '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE';
   const ADMIN_ID = '1741528704';
 
   // 1. Initialize Telegram WebApp SDK if running inside Telegram

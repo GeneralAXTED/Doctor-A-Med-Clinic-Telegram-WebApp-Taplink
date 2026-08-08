@@ -27,22 +27,36 @@ Ushbu loyiha orqali foydalanuvchilar shifokorlar qabuliga yozilishlari, 60+ muta
 
 ```
 portfolio/
-├── index.html         # Asosiy WebApp HTML5 strukturasi va Telegram SDK
-├── style.css          # Brend qizil ranglar, animatsiyalar va glassmorphism
-├── app.js             # Qidiruv, modal va Telegram API bildirishnoma mantig'i
-├── bot.php            # Telegram Bot Webhook server kodi (PHP)
-├── set_webhook.php    # 1-bosqichli avtomatik Webhook o'rnatish skripti (PHP)
-└── assets/            # Tibbiy fotorealistik rasmlar va brend belgilari
+├── index.html               # Asosiy WebApp HTML5 strukturasi va Telegram SDK
+├── style.css                # Brend qizil ranglar, animatsiyalar va glassmorphism
+├── app.js                   # Qidiruv, modal va Telegram API bildirishnoma mantig'i
+├── bot.php                  # Standart PHP Telegram Webhook handleri
+├── set_webhook.php          # 1-bosqichli avtomatik Webhook o'rnatish skripti (PHP)
+├── TelegramBotController.php# Laravel Framework uchun maxsus Controller
+└── assets/                  # Doctor-A logotipi va fotorealistik tibbiy rasmlar
 ```
 
 ---
 
-### 🚀 PHP Webhook O'rnatish Qo'llanmasi (Terminalsiz)
+### 🚀 Laravel va Hostingga Joylash Qo'llanmasi (`https://doctoramed.uz/doctora/`)
 
-1. Loyiha fayllarini `https://doctoramed.uz/` serveringizga yuklang.
-2. Brauzeringizda quyidagi havolani 1 marta oching:
-   👉 **`https://doctoramed.uz/set_webhook.php`**
-3. Tayyor! Webhook o'rnatiladi va botingiz terminal/pythonsiz avtomatik ishlaydi.
+#### 1-USUL: Laravel loyihangiz public papkasiga joylash (Eng oson)
+1. WebApp loyihasidagi barcha fayllarni Laravel loyihangizning `public/doctora/` papkasi ichiga tashlang.
+2. Brauzerda quyidagi havolani 1 marta oching:
+   👉 **`https://doctoramed.uz/doctora/set_webhook.php`**
+3. Tayyor! Webhook o'rnatiladi.
+
+#### 2-USUL: Laravel Framework (Routes & Controller) orqali boshqarish
+1. `TelegramBotController.php` faylini Laravel loyihangizning `app/Http/Controllers/` papkasiga nusxalang.
+2. `routes/api.php` faylingizga ushbu routelarni qo'shing:
+   ```php
+   use App\Http\Controllers\TelegramBotController;
+
+   Route::post('/telegram/webhook', [TelegramBotController::class, 'handleWebhook']);
+   Route::get('/telegram/set-webhook', [TelegramBotController::class, 'setWebhook']);
+   ```
+3. Webhook-ni faollashtirish uchun brauzerda bosing:
+   👉 **`https://doctoramed.uz/api/telegram/set-webhook`**
 
 ---
 

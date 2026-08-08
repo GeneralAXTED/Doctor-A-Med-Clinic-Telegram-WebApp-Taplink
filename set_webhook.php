@@ -6,8 +6,8 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-define('BOT_TOKEN', '8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg');
-define('WEBHOOK_URL', 'https://doctoramed.uz/bot.php');
+define('BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE');
+define('WEBHOOK_URL', 'https://doctoramed.uz/doctora/bot.php');
 
 $api_url = "https://api.telegram.org/bot" . BOT_TOKEN . "/setWebhook?url=" . urlencode(WEBHOOK_URL);
 
