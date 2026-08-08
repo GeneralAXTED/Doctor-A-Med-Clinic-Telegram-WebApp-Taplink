@@ -4,10 +4,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Telegram Config (Overrides via window object or Laravel env if provided)
-  const BOT_TOKEN = window.BOT_TOKEN || '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE';
-  const ADMIN_ID = window.ADMIN_ID || '1741528704';
-
   // 1. Initialize Telegram WebApp SDK if running inside Telegram
   const tg = window.Telegram?.WebApp;
   let tgUser = null;
@@ -36,37 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Helper function to send instant HTML message to Admin Telegram ID (Secure Proxy first)
+  // Helper function to send instant HTML message via Secure Backend Proxy API (No tokens in JS!)
   async function sendToAdminTelegram(htmlText, payloadData) {
-    // 1. Try secure backend proxy first (Hides bot token from public JS)
     try {
       const proxyResponse = await fetch('/api/telegram/send-booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadData || {})
       });
-      if (proxyResponse.ok) {
-        return await proxyResponse.json();
-      }
+      return await proxyResponse.json();
     } catch (e) {
-      console.log('Backend proxy endpoint offline, falling back to direct API');
-    }
-
-    // 2. Direct Telegram API call fallback (For static hosting)
-    const endpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: ADMIN_ID,
-          text: htmlText,
-          parse_mode: 'HTML'
-        })
-      });
-      return await response.json();
-    } catch (error) {
-      console.error('Failed to send Telegram message to Admin:', error);
+      console.error('Failed to send request via Backend API Proxy:', e);
       return null;
     }
   }
@@ -323,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
       }
 
-      // Secure Backend Proxy Request
+      // Send to Secure Backend Proxy Endpoint (/api/telegram/send-booking)
       await sendToAdminTelegram(htmlText, { name, phone, service, note, tg_user: tgUserTag });
 
       if (tg) {
