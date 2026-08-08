@@ -338,7 +338,7 @@ body {
 .tap-button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 14px 18px;
   border-radius: 16px;
   text-decoration: none;
@@ -351,6 +351,7 @@ body {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  text-align: center;
 }
 
 .tap-button::before {
@@ -390,10 +391,16 @@ body {
   color: #ffffff;
 }
 
+.tap-button .arrow-icon {
+  position: absolute;
+  right: 18px;
+}
+
 .btn-left-content {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: 12px;
 }
 
 .btn-icon-wrapper {
@@ -417,7 +424,8 @@ body {
 .btn-text-group {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  align-items: center;
+  text-align: center;
 }
 
 .btn-title {
