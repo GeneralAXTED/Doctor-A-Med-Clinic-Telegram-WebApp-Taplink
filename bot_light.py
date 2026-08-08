@@ -60,7 +60,10 @@ def handle_update(update):
             "inline_keyboard": [
                 [{"text": "🏥 Doctor-A WebApp-ni ochish", "web_app": {"url": WEBAPP_URL}}],
                 [
-                    {"text": "📍 Yandex Xarita", "url": "https://yandex.uz/maps/-/CTGGnMIo"},
+                    {"text": "💬 WhatsApp", "url": "https://wa.me/998507841070"},
+                    {"text": "📍 Google Xarita", "url": "https://maps.app.goo.gl/ELzSYWwwFr4Xc7pE6"}
+                ],
+                [
                     {"text": "📢 Telegram Kanal", "url": "https://t.me/doctoramedclinic"}
                 ]
             ]

@@ -186,42 +186,62 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding-top: 10px;
   position: relative;
 }
 
-.logo-wrapper {
+.brand-logo-box {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  padding: 6px;
-  background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
-  box-shadow: 0 10px 25px var(--primary-red-glow);
+  margin-bottom: 4px;
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(230, 25, 25, 0.2));
   animation: float-logo 4s ease-in-out infinite;
 }
 
 @keyframes float-logo {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-5px); }
 }
 
-.logo-inner {
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  border-radius: 50%;
-  display: flex;
+.mrt-service-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary-red);
+  background: var(--primary-red-light);
+  border: 1px solid rgba(230, 25, 25, 0.25);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 8px;
+  gap: 5px;
+  white-space: nowrap;
 }
 
-.logo-inner svg {
-  width: 85%;
-  height: 85%;
+.mrt-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--primary-red-glow);
+  backdrop-filter: var(--glass-blur);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  box-shadow: 0 4px 12px var(--primary-red-light);
+  letter-spacing: 0.02em;
 }
 
 .brand-title {
@@ -770,8 +790,8 @@ body {
 /* Social Media Grid Footer */
 .social-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
   margin-top: 8px;
 }
 
@@ -780,8 +800,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px;
+  gap: 4px;
+  padding: 10px 4px;
   border-radius: 14px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -797,11 +817,12 @@ body {
 }
 
 .social-icon {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
 }
 
 .social-link.telegram { color: #0088cc; }
 .social-link.instagram { color: #e1306c; }
+.social-link.whatsapp { color: #25D366; }
 .social-link.facebook { color: #1877f2; }
 .social-link.youtube { color: #ff0000; }
 

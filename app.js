@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Abdominal jarrohlik', category: 'surgery', icon: 'fa-stomach', badge: 'Qorin bo\'shlig\'i' }
   ];
 
-  // DOM Elements
+  // DOM Elements Selection
   const itemsGrid = document.getElementById('itemsGrid');
   const searchInput = document.getElementById('searchInput');
   const filterTabs = document.querySelectorAll('.tab-btn');
@@ -156,8 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategory = 'all';
   let currentSearchQuery = '';
 
-  // 3. Render Medical Items
+  // 3. Render Medical Items Safely
   function renderItems() {
+    if (!itemsGrid) return;
     itemsGrid.innerHTML = '';
 
     const filtered = medicalData.filter(item => {
@@ -167,7 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return matchesCategory && matchesSearch;
     });
 
-    totalItemsCount.textContent = `${filtered.length} ta natija`;
+    if (totalItemsCount) {
+      totalItemsCount.textContent = `${filtered.length} ta natija`;
+    }
 
     if (filtered.length === 0) {
       itemsGrid.innerHTML = `
@@ -198,85 +201,96 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Search & Filter Handlers
-  searchInput.addEventListener('input', (e) => {
-    currentSearchQuery = e.target.value;
-    renderItems();
-  });
-
-  filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      filterTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentCategory = tab.dataset.filter;
+  // 4. Search & Filter Handlers (Safely Guarded)
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentSearchQuery = e.target.value;
       renderItems();
     });
-  });
+  }
 
-  // 5. Modal Handlers
+  if (filterTabs && filterTabs.length > 0) {
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCategory = tab.dataset.filter;
+        renderItems();
+      });
+    });
+  }
+
+  // 5. Modal Handlers (Safely Guarded)
   function openModal(modal) {
-    modal.classList.add('active');
+    if (modal) modal.classList.add('active');
   }
 
   function closeModal(modal) {
-    modal.classList.remove('active');
+    if (modal) modal.classList.remove('active');
   }
 
-  openCallModalBtn.addEventListener('click', () => openModal(callModal));
-  stickyCallBtn.addEventListener('click', () => openModal(callModal));
+  if (openCallModalBtn) openCallModalBtn.addEventListener('click', () => openModal(callModal));
+  if (stickyCallBtn) stickyCallBtn.addEventListener('click', () => openModal(callModal));
   if (stickyMsgBtn) stickyMsgBtn.addEventListener('click', () => openModal(directMsgModal));
   if (openDirectMsgModalBtn) openDirectMsgModalBtn.addEventListener('click', () => openModal(directMsgModal));
 
-  closeCallModal.addEventListener('click', () => closeModal(callModal));
-  closeBookingModal.addEventListener('click', () => closeModal(bookingModal));
+  if (closeCallModal) closeCallModal.addEventListener('click', () => closeModal(callModal));
+  if (closeBookingModal) closeBookingModal.addEventListener('click', () => closeModal(bookingModal));
   if (closeDirectMsgModal) closeDirectMsgModal.addEventListener('click', () => closeModal(directMsgModal));
 
-  bookEyeDoctorBtn.addEventListener('click', () => {
-    openBookingModalWithService('Oftalmolog');
-  });
+  if (bookEyeDoctorBtn) {
+    bookEyeDoctorBtn.addEventListener('click', () => {
+      openBookingModalWithService('Oftalmolog');
+    });
+  }
 
-  openFormFromCallModal.addEventListener('click', () => {
-    closeModal(callModal);
-    openModal(bookingModal);
-  });
+  if (openFormFromCallModal) {
+    openFormFromCallModal.addEventListener('click', () => {
+      closeModal(callModal);
+      openModal(bookingModal);
+    });
+  }
 
   function openBookingModalWithService(serviceName) {
-    let found = false;
-    for (let i = 0; i < serviceSelect.options.length; i++) {
-      if (serviceSelect.options[i].value.toLowerCase().includes(serviceName.toLowerCase())) {
-        serviceSelect.selectedIndex = i;
-        found = true;
-        break;
+    if (serviceSelect) {
+      let found = false;
+      for (let i = 0; i < serviceSelect.options.length; i++) {
+        if (serviceSelect.options[i].value.toLowerCase().includes(serviceName.toLowerCase())) {
+          serviceSelect.selectedIndex = i;
+          found = true;
+          break;
+        }
       }
-    }
-    if (!found) {
-      const newOption = new Option(serviceName, serviceName, true, true);
-      serviceSelect.add(newOption);
+      if (!found) {
+        const newOption = new Option(serviceName, serviceName, true, true);
+        serviceSelect.add(newOption);
+      }
     }
     openModal(bookingModal);
   }
 
   window.addEventListener('click', (e) => {
-    if (e.target === callModal) closeModal(callModal);
-    if (e.target === bookingModal) closeModal(bookingModal);
-    if (e.target === directMsgModal) closeModal(directMsgModal);
+    if (callModal && e.target === callModal) closeModal(callModal);
+    if (bookingModal && e.target === bookingModal) closeModal(bookingModal);
+    if (directMsgModal && e.target === directMsgModal) closeModal(directMsgModal);
   });
 
   // 6. Form Submission 1: Qabulga Yozilish (Booking Form)
-  bookingForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  if (bookingForm) {
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const name = document.getElementById('patientName').value;
-    const phone = document.getElementById('patientPhone').value;
-    const service = serviceSelect.value;
-    const note = document.getElementById('patientNote').value || 'Mavjud emas';
+      const name = document.getElementById('patientName')?.value || 'Noma\'lum';
+      const phone = document.getElementById('patientPhone')?.value || 'Noma\'lum';
+      const service = serviceSelect?.value || 'Tanlanmadi';
+      const note = document.getElementById('patientNote')?.value || 'Mavjud emas';
 
-    let tgUserTag = 'Mavjud emas';
-    if (tgUser) {
-      tgUserTag = tgUser.username ? `@${tgUser.username} (ID: ${tgUser.id})` : `ID: ${tgUser.id}`;
-    }
+      let tgUserTag = 'Mavjud emas';
+      if (tgUser) {
+        tgUserTag = tgUser.username ? `@${tgUser.username} (ID: ${tgUser.id})` : `ID: ${tgUser.id}`;
+      }
 
-    const htmlText = `
+      const htmlText = `
 🚨 <b>YANGI QABULGA YOZILISH ARIZASI</b> 🚨
 
 🏥 <b>Klinika:</b> Doctor-A Med Clinic
@@ -286,40 +300,45 @@ document.addEventListener('DOMContentLoaded', () => {
 📝 <b>Qo'shimcha izoh:</b> ${note}
 📲 <b>Telegram Profil:</b> ${tgUserTag}
 ⏰ <b>Vaqt:</b> ${new Date().toLocaleString('uz-UZ')}
-    `.trim();
+      `.trim();
 
-    const submitBtn = document.getElementById('submitBookingBtn');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
-
-    // Direct Telegram API Notification to Admin ID 1741528704
-    await sendToAdminTelegram(htmlText);
-
-    if (tg) {
-      try {
-        tg.sendData(JSON.stringify({ type: 'booking', name, phone, service, note }));
-      } catch (err) {
-        console.log('tg.sendData:', err);
+      const submitBtn = document.getElementById('submitBookingBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
       }
-    }
 
-    alert(`Rahmat, ${name}! Arizangiz qabul qilindi va adminga yetkazildi. Operatorimiz tez orada siz bilan bog'lanadi.`);
+      // Direct Telegram API Notification to Admin ID 1741528704
+      await sendToAdminTelegram(htmlText);
 
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Adminga yuborish';
+      if (tg) {
+        try {
+          tg.sendData(JSON.stringify({ type: 'booking', name, phone, service, note }));
+        } catch (err) {
+          console.log('tg.sendData:', err);
+        }
+      }
 
-    closeModal(bookingModal);
-    bookingForm.reset();
-  });
+      alert(`Rahmat, ${name}! Arizangiz qabul qilindi va adminga yetkazildi. Operatorimiz tez orada siz bilan bog'lanadi.`);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Adminga yuborish';
+      }
+
+      closeModal(bookingModal);
+      bookingForm.reset();
+    });
+  }
 
   // 7. Form Submission 2: Direct Message to Admin (Inquiry Form)
   if (directMsgForm) {
     directMsgForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('msgSenderName').value;
-      const phone = document.getElementById('msgSenderPhone').value;
-      const content = document.getElementById('msgContent').value;
+      const name = document.getElementById('msgSenderName')?.value || 'Noma\'lum';
+      const phone = document.getElementById('msgSenderPhone')?.value || 'Noma\'lum';
+      const content = document.getElementById('msgContent')?.value || 'Mavjud emas';
 
       let tgUserTag = 'Mavjud emas';
       if (tgUser) {
@@ -349,17 +368,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 8. Dark / Light Theme Toggle
-  themeToggleBtn.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    if (newTheme === 'dark') {
-      themeIcon.className = 'fa-solid fa-sun';
-    } else {
-      themeIcon.className = 'fa-solid fa-moon';
-    }
-  });
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      if (themeIcon) {
+        themeIcon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    });
+  }
 
   // Initial render
   renderItems();

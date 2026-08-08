@@ -1,0 +1,14 @@
+# Environment variables and secrets
+.env
+.env.local
+*.log
+
+# Temp and OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# IDE & Editor folders
+.vscode/
+.idea/
+.gemini/

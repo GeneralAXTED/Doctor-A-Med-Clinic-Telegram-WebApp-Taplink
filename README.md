@@ -30,10 +30,19 @@ portfolio/
 ├── index.html         # Asosiy WebApp HTML5 strukturasi va Telegram SDK
 ├── style.css          # Brend qizil ranglar, animatsiyalar va glassmorphism
 ├── app.js             # Qidiruv, modal va Telegram API bildirishnoma mantig'i
-├── bot_light.py       # Telegram Bot server kodi (Zero-dependency Python)
-├── bot.py             # Telegram Bot server kodi (python-telegram-bot)
+├── bot.php            # Telegram Bot Webhook server kodi (PHP)
+├── set_webhook.php    # 1-bosqichli avtomatik Webhook o'rnatish skripti (PHP)
 └── assets/            # Tibbiy fotorealistik rasmlar va brend belgilari
 ```
+
+---
+
+### 🚀 PHP Webhook O'rnatish Qo'llanmasi (Terminalsiz)
+
+1. Loyiha fayllarini `https://doctoramed.uz/` serveringizga yuklang.
+2. Brauzeringizda quyidagi havolani 1 marta oching:
+   👉 **`https://doctoramed.uz/set_webhook.php`**
+3. Tayyor! Webhook o'rnatiladi va botingiz terminal/pythonsiz avtomatik ishlaydi.
 
 ---
 

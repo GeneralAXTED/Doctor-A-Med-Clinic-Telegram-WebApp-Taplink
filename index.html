@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="uz" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Doctor-A Med Clinic | Namangan - Rasmiy Telegram WebApp</title>
-  <meta name="description" content="Doctor-A Med Clinic Namangan. Telegram WebApp & Taplink. 40+ tajribali shifokorlar, 20+ bo'limlar, zamonaviy MRT, MSKT, UZI. Online navbatga yoziling!">
-  
+  <meta name="description"
+    content="Doctor-A Med Clinic Namangan. Telegram WebApp & Taplink. 40+ tajribali shifokorlar, 20+ bo'limlar, zamonaviy MRT, MSKT, UZI. Online navbatga yoziling!">
+
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <div class="app-container">
-    
+
     <!-- Top ECG Pulse Header Bar -->
     <div class="ecg-header-bar">
       <div class="top-bar-controls">
@@ -28,57 +33,57 @@
           <span class="status-dot"></span>
           <span id="statusText">Hozir Ochiq · 08:00 - 20:00</span>
         </div>
+        <div class="mrt-service-pill">
+          <i class="fa-solid fa-microscope"></i> MRT · MSKT · RENTGEN 24/7
+        </div>
         <button class="theme-toggle-btn" id="themeToggleBtn" title="Mavzuni o'zgartirish">
           <i class="fa-solid fa-moon" id="themeIcon"></i>
         </button>
       </div>
-      
+
       <!-- Animated Heartbeat Line -->
       <svg class="ecg-line-svg" viewBox="0 0 500 20" preserveAspectRatio="none">
-        <path class="ecg-path" d="M 0 10 L 150 10 L 160 2 L 170 18 L 180 0 L 190 20 L 200 10 L 350 10 L 360 2 L 370 18 L 380 0 L 390 20 L 400 10 L 500 10" fill="none" stroke-width="2"/>
+        <path class="ecg-path"
+          d="M 0 10 L 150 10 L 160 2 L 170 18 L 180 0 L 190 20 L 200 10 L 350 10 L 360 2 L 370 18 L 380 0 L 390 20 L 400 10 L 500 10"
+          fill="none" stroke-width="2" />
       </svg>
     </div>
 
     <!-- Hero Profile Section -->
     <header class="profile-hero">
-      <div class="logo-wrapper">
-        <div class="logo-inner">
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="26" fill="#E61919"/>
-            <circle cx="100" cy="40" r="14" fill="#E61919"/>
-            <circle cx="100" cy="160" r="14" fill="#E61919"/>
-            <circle cx="40" cy="100" r="14" fill="#E61919"/>
-            <circle cx="160" cy="100" r="14" fill="#E61919"/>
-            <circle cx="58" cy="58" r="12" fill="#E61919"/>
-            <circle cx="142" cy="58" r="12" fill="#E61919"/>
-            <circle cx="58" cy="142" r="12" fill="#E61919"/>
-            <circle cx="142" cy="142" r="12" fill="#E61919"/>
-            <circle cx="100" cy="18" r="6" fill="#E61919"/>
-            <circle cx="100" cy="182" r="6" fill="#E61919"/>
-            <circle cx="18" cy="100" r="6" fill="#E61919"/>
-            <circle cx="182" cy="100" r="6" fill="#E61919"/>
-          </svg>
-        </div>
+      <div class="brand-logo-box">
+        <img src="assets/logo.png" alt="Doctor-A Med Clinic Logo" class="brand-logo-img">
       </div>
 
       <h1 class="brand-title">Doctor<span>-A</span></h1>
+
+      <div class="mrt-banner-badge">
+        <i class="fa-solid fa-bolt" style="color: var(--primary-red);"></i>
+        <span>MRT · MSKT · RENTGEN 24/7</span>
+      </div>
+
+      <!-- Tagline & Rating (Commented out by user) -->
+      <!-- 
       <p class="brand-tagline">
         Diagnostika <span></span> Jarrohlik <span></span> Davolash
-      </p>
+      </p> 
 
       <div class="clinic-rating-box">
         <i class="fa-solid fa-star star-icon"></i>
         <span>3.5 (64 ta sharh)</span>
         <span style="color: var(--text-muted);">· Namangan</span>
-      </div>
+      </div> 
+      -->
 
       <!-- Telegram User Welcome Strip (if inside WebApp) -->
-      <div id="tgUserWelcome" style="display: none; font-size: 0.82rem; font-weight: 600; color: var(--primary-red); background: var(--primary-red-light); padding: 4px 12px; border-radius: 12px; margin-top: 4px;">
+      <div id="tgUserWelcome"
+        style="display: none; font-size: 0.82rem; font-weight: 600; color: var(--primary-red); background: var(--primary-red-light); padding: 4px 12px; border-radius: 12px; margin-top: 4px;">
         👋 Xush kelibsiz, <span id="tgUserName">Foydalanuvchi</span>!
       </div>
     </header>
 
-    <!-- Quick Stats Strip -->
+    <!-- Quick Stats Strip (Commented out by user) -->
+    <!-- 
     <div class="stats-strip">
       <div class="stat-item">
         <div class="stat-number">40+</div>
@@ -97,10 +102,11 @@
         <div class="stat-label">Sifat</div>
       </div>
     </div>
+    -->
 
     <!-- Main Taplink Action Buttons -->
     <div class="action-buttons-list">
-      
+
       <!-- Primary Booking / Call CTA -->
       <button class="tap-button tap-button-featured" id="openCallModalBtn">
         <div class="btn-left-content">
@@ -115,19 +121,19 @@
         <i class="fa-solid fa-chevron-right arrow-icon"></i>
       </button>
 
-      <!-- Direct Message to Admin Button -->
-      <button class="tap-button" id="openDirectMsgModalBtn" style="border: 1px solid var(--primary-red);">
+      <!-- WhatsApp Direct Chat Link -->
+      <a href="https://wa.me/998507841070" target="_blank" class="tap-button">
         <div class="btn-left-content">
-          <div class="btn-icon-wrapper" style="background: var(--primary-red-light); color: var(--primary-red);">
-            <i class="fa-solid fa-comment-medical"></i>
+          <div class="btn-icon-wrapper" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">
+            <i class="fa-brands fa-whatsapp"></i>
           </div>
           <div class="btn-text-group">
-            <span class="btn-title">Adminga Xabar / Murojaat Qoldirish</span>
-            <span class="btn-subtitle">Xabaringiz darhol adminga yetib boradi</span>
+            <span class="btn-title">WhatsApp Bilan Bog'lanish</span>
+            <span class="btn-subtitle">+998 50 784 10 70</span>
           </div>
         </div>
-        <i class="fa-solid fa-paper-plane arrow-icon" style="color: var(--primary-red);"></i>
-      </button>
+        <i class="fa-solid fa-arrow-up-right-from-square arrow-icon"></i>
+      </a>
 
       <!-- Telegram Channel -->
       <a href="https://t.me/doctoramedclinic" target="_blank" class="tap-button">
@@ -141,20 +147,6 @@
           </div>
         </div>
         <i class="fa-solid fa-arrow-up-right-from-square arrow-icon"></i>
-      </a>
-
-      <!-- Telegram Admin / Contact -->
-      <a href="https://t.me/doctora_namangan" target="_blank" class="tap-button">
-        <div class="btn-left-content">
-          <div class="btn-icon-wrapper" style="background: rgba(0, 136, 204, 0.1); color: #0088cc;">
-            <i class="fa-solid fa-headset"></i>
-          </div>
-          <div class="btn-text-group">
-            <span class="btn-title">Online Mutaxassis Bilan Bog'lanish</span>
-            <span class="btn-subtitle">@doctoraclinic / @doctora_namangan</span>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right arrow-icon"></i>
       </a>
 
       <!-- Instagram Profile -->
@@ -171,14 +163,14 @@
         <i class="fa-solid fa-arrow-up-right-from-square arrow-icon"></i>
       </a>
 
-      <!-- Navigation & Maps (Yandex Maps) -->
-      <a href="https://yandex.uz/maps/-/CTGGnMIo" target="_blank" class="tap-button">
+      <!-- Navigation & Maps (Google Maps) -->
+      <a href="https://maps.app.goo.gl/ELzSYWwwFr4Xc7pE6" target="_blank" class="tap-button">
         <div class="btn-left-content">
-          <div class="btn-icon-wrapper" style="background: rgba(255, 0, 0, 0.1); color: #ff0000;">
-            <i class="fa-solid fa-map-location-dot"></i>
+          <div class="btn-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <i class="fa-solid fa-location-dot"></i>
           </div>
           <div class="btn-text-group">
-            <span class="btn-title">Yandex Maps Navigatsiya & Xarita</span>
+            <span class="btn-title">Google Maps Navigatsiya & Xarita</span>
             <span class="btn-subtitle">Namangan, Boburshox ko'chasi 2-uy</span>
           </div>
         </div>
@@ -186,14 +178,14 @@
       </a>
 
       <!-- Official Website -->
-      <a href="https://doctoramedclinic.uz" target="_blank" class="tap-button">
+      <a href="https://doctoramed.uz/" target="_blank" class="tap-button">
         <div class="btn-left-content">
           <div class="btn-icon-wrapper">
             <i class="fa-solid fa-globe"></i>
           </div>
           <div class="btn-text-group">
             <span class="btn-title">Rasmiy Veb-Sayt</span>
-            <span class="btn-subtitle">doctoramedclinic.uz</span>
+            <span class="btn-subtitle">doctoramed.uz</span>
           </div>
         </div>
         <i class="fa-solid fa-arrow-up-right-from-square arrow-icon"></i>
@@ -201,7 +193,8 @@
 
     </div>
 
-    <!-- Special Feature Announcement Banner (Ophthalmology Team) -->
+    <!-- Special Feature Announcement Banner (Ophthalmology Team - Commented out by user) -->
+    <!-- 
     <div class="announcement-card">
       <div class="announcement-img-wrapper">
         <img src="assets/oftalmolog.png" alt="Oftalmologlar jamoasi" class="announcement-img">
@@ -212,7 +205,8 @@
       <div class="announcement-body">
         <h3 class="announcement-title">Oftalmologlar jamoasi qabulni boshladi! 📣</h3>
         <p class="announcement-desc">
-          Doctor A Med Clinic’da ko‘z kasalliklarini erta aniqlash, ko‘rish qobiliyatini tekshirish va zamonaviy davolash bo‘yicha tajribali oftalmologlarimiz faoliyat boshladi.
+          Doctor A Med Clinic’da ko‘z kasalliklarini erta aniqlash, ko‘rish qobiliyatini tekshirish va zamonaviy
+          davolash bo‘yicha tajribali oftalmologlarimiz faoliyat boshladi.
         </p>
         <div class="symptoms-pills">
           <span class="symptom-tag">👁️ Ko'zda og'riq</span>
@@ -226,8 +220,10 @@
         </button>
       </div>
     </div>
+    -->
 
-    <!-- Search & Service Filter System -->
+    <!-- Search & Service Filter System (Commented out by user) -->
+    <!-- 
     <div class="search-section">
       <div class="section-title-box">
         <h2 class="section-title">
@@ -238,7 +234,8 @@
 
       <div class="search-bar-wrapper">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="searchInput" class="search-input" placeholder="Shifokor, bo'lim yoki diagnostikani qidiring...">
+        <input type="text" id="searchInput" class="search-input"
+          placeholder="Shifokor, bo'lim yoki diagnostikani qidiring...">
       </div>
 
       <div class="filter-tabs">
@@ -248,13 +245,13 @@
         <button class="tab-btn" data-filter="surgery">Jarrohlik (13)</button>
       </div>
 
-      <!-- Dynamic Items Grid -->
       <div class="items-grid" id="itemsGrid">
-        <!-- Rendered dynamically via app.js -->
       </div>
     </div>
+    -->
 
-    <!-- Location & Working Hours Info -->
+    <!-- Location & Working Hours Info (Commented out by user) -->
+    <!-- 
     <div class="info-card">
       <div class="info-row">
         <div class="info-icon">
@@ -278,17 +275,19 @@
         </div>
       </div>
 
-      <!-- Interactive Yandex Map Preview -->
+      /* Google Maps Embedded Preview */
       <div class="map-container">
         <iframe 
-          src="https://yandex.uz/map-widget/v1/?ll=71.673898%2C40.997232&z=16&pt=71.673898,40.997232,pm2rdm" 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.623458923412!2d71.672!3d40.998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDU5JzUyLjgiTiA3McKwNDAnMTkuMiJF!5e0!3m2!1suz!2s!4v1620000000000!5m2!1suz!2s" 
           width="100%" 
           height="100%" 
           frameborder="0" 
-          allowfullscreen="true">
+          allowfullscreen="" 
+          loading="lazy">
         </iframe>
       </div>
     </div>
+    -->
 
     <!-- Social Links Row Footer -->
     <div class="social-grid">
@@ -300,11 +299,16 @@
         <i class="fa-brands fa-instagram social-icon"></i>
         <span class="social-name">Instagram</span>
       </a>
-      <a href="https://www.facebook.com/people/Doctor-A-Clinic/61592680256763/" target="_blank" class="social-link facebook">
+      <a href="https://wa.me/998507841070" target="_blank" class="social-link whatsapp">
+        <i class="fa-brands fa-whatsapp social-icon"></i>
+        <span class="social-name">WhatsApp</span>
+      </a>
+      <a href="https://www.facebook.com/people/Doctor-A-Clinic/61592680256763/" target="_blank"
+        class="social-link facebook">
         <i class="fa-brands fa-facebook-f social-icon"></i>
         <span class="social-name">Facebook</span>
       </a>
-      <a href="https://doctoramedclinic.uz" target="_blank" class="social-link youtube">
+      <a href="https://doctoramed.uz/" target="_blank" class="social-link youtube">
         <i class="fa-solid fa-globe social-icon"></i>
         <span class="social-name">Website</span>
       </a>
@@ -347,7 +351,12 @@
           <span>📞 +998 (69) 226 88 88</span>
           <i class="fa-solid fa-phone-flip" style="color: var(--primary-red);"></i>
         </a>
-        <button class="submit-booking-btn" style="background: var(--medical-blue); margin-top: 6px;" id="openFormFromCallModal">
+        <a href="https://wa.me/998507841070" target="_blank" class="phone-choice-btn" style="border-color: #25D366; color: #25D366;">
+          <span>💬 WhatsApp: +998 50 784 10 70</span>
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <button class="submit-booking-btn" style="background: var(--medical-blue); margin-top: 6px;"
+          id="openFormFromCallModal">
           <i class="fa-solid fa-calendar-plus"></i> Online Yozilish Formasi
         </button>
       </div>
@@ -415,7 +424,8 @@
         </div>
         <div class="form-group">
           <label class="form-label">Murojaatingiz / Xabaringiz</label>
-          <textarea class="form-input" id="msgContent" rows="4" placeholder="Savolingiz yoki taklifingizni yozing..." style="resize: vertical;" required></textarea>
+          <textarea class="form-input" id="msgContent" rows="4" placeholder="Savolingiz yoki taklifingizni yozing..."
+            style="resize: vertical;" required></textarea>
         </div>
         <button type="submit" class="submit-booking-btn" style="background: var(--primary-red);">
           <i class="fa-solid fa-paper-plane"></i> Xabarni Adminga Yuborish
@@ -426,4 +436,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
