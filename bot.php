@@ -1,16 +1,27 @@
 <?php
 /* ==========================================================================
    DOCTOR-A MED CLINIC - TELEGRAM BOT WEBHOOK HANDLER (PHP)
-   Token: 8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg
+   Token: Configured via environment variable or default placeholder
    Admin ID: 1741528704
    Site: https://doctoramed.uz/
    ========================================================================== */
 
 header('Content-Type: application/json');
 
-define('BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE');
-define('ADMIN_ID', 1741528704);
-define('WEBAPP_URL', 'https://doctoramed.uz/doctora/');
+require_once 'text_processor.php';
+
+// Safe environment loading helper
+function get_env($key, $default = null) {
+    $val = getenv($key);
+    if ($val !== false) {
+        return $val;
+    }
+    return $default;
+}
+
+define('BOT_TOKEN', get_env('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'));
+define('ADMIN_ID', (int)get_env('TELEGRAM_ADMIN_ID', 1741528704));
+define('WEBAPP_URL', get_env('TELEGRAM_WEBAPP_URL', 'https://doctoramed.uz/doctora/'));
 
 // Read raw JSON update from Telegram Webhook
 $content = file_get_contents("php://input");
@@ -40,12 +51,17 @@ function sendTelegramRequest($method, $data) {
 if (isset($update['message'])) {
     $message = $update['message'];
     $chat_id = $message['chat']['id'];
-    $text = isset($message['text']) ? trim($message['text']) : '';
-    $from = $message['from'];
+    $text = isset($message['text']) ? trim($message['text']) : (isset($message['caption']) ? trim($message['caption']) : '');
+    $from = $message['from'] ?? [];
     $first_name = isset($from['first_name']) ? htmlspecialchars($from['first_name']) : 'Foydalanuvchi';
     $last_name = isset($from['last_name']) ? htmlspecialchars($from['last_name']) : '';
-    $username = isset($from['username']) ? '@' . $from['username'] : 'ID: ' . $from['id'];
-    $user_id = $from['id'];
+    $username = isset($from['username']) ? '@' . $from['username'] : 'ID: ' . ($from['id'] ?? 'unknown');
+    $user_id = $from['id'] ?? null;
+
+    if (!$user_id) {
+        echo json_encode(['status' => 'No user ID']);
+        exit;
+    }
 
     // 1. Handle /start Command
     if ($text === '/start') {
@@ -98,7 +114,7 @@ if (isset($update['message'])) {
     // 2. Handle Admin Reply to User
     if ($user_id == ADMIN_ID && isset($message['reply_to_message'])) {
         $reply_to = $message['reply_to_message'];
-        $reply_text = isset($reply_to['text']) ? $reply_to['text'] : '';
+        $reply_text = $reply_to['text'] ?? $reply_to['caption'] ?? '';
 
         if (preg_match('/ID:\s*<code>(\d+)<\/code>/i', $reply_text, $matches)) {
             $target_id = $matches[1];
@@ -118,11 +134,25 @@ if (isset($update['message'])) {
 
     // 3. Handle Direct Messages from Normal Users -> Forward to Admin ID 1741528704
     if ($user_id != ADMIN_ID) {
+        $translated_text = "";
+        // Detect and translate text processing sections
+        if (stripos($text, 'qisqacha mazmuni') !== false || stripos($text, 'asosiy content') !== false) {
+            try {
+                $translated_sections = TextProcessor::processAndTranslateSections($text, 'en');
+                if (!empty($translated_sections)) {
+                    $translated_text = "\n\n🇬🇧 <b>Translation (English):</b>\n" . $translated_sections;
+                }
+            } catch (\Exception $ex) {
+                // Safe ignore
+            }
+        }
+
         $admin_msg = "📩 <b>YANGI MUROJAAT / XABAR:</b>\n"
             . "👤 <b>Yuboruvchi:</b> " . $first_name . " " . $last_name . "\n"
             . "📲 <b>Profil:</b> " . $username . "\n"
             . "🆔 <b>ID:</b> <code>" . $user_id . "</code>\n\n"
-            . "💬 <b>Xabar:</b>\n" . htmlspecialchars($text);
+            . "💬 <b>Xabar:</b>\n" . htmlspecialchars($text)
+            . $translated_text;
 
         sendTelegramRequest('sendMessage', [
             'chat_id' => ADMIN_ID,

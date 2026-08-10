@@ -1,20 +1,27 @@
 import logging
 import sys
+import os
 import requests
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from text_processor import process_and_translate_sections
 
-# ==========================================================================
-# TELEGRAM BOT FOR DOCTOR-A MED CLINIC
-# Token: 8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg
-# Admin ID: 1741528704
-# ==========================================================================
+# Zero-dependency environment variables loader
+def load_env():
+    if os.path.exists(".env"):
+        with open(".env", "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, val = line.split("=", 1)
+                    os.environ[key.strip()] = val.strip()
 
-BOT_TOKEN = "8827883515:AAFa8BGzDkLslpcU5OFdMzQi8xbGHqC8ozg"
-ADMIN_ID = 1741528704
+load_env()
 
-# WebApp URL (Replace with your actual HTTPS deployment URL e.g. https://doctoramedclinic.uz or Vercel URL)
-WEBAPP_URL = "https://doctoramedclinic.uz" 
+# Secure Configuration Loading
+BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
+ADMIN_ID = int(os.getenv("ADMIN_ID", 1741528704))
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://doctoramed.uz/doctora/")
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -57,7 +64,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    text = update.message.text or "[Fayl/Media]"
+    text = update.message.text or update.message.caption or "[Fayl/Media]"
 
     # If message is from Admin replying to a forwarded user message
     if user.id == ADMIN_ID and update.message.reply_to_message:
@@ -77,16 +84,35 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logging.error(f"Error sending reply to user: {e}")
 
-    # Forward message from normal users directly to Admin ID 1741528704
+    # Forward message from normal users directly to Admin
     if user.id != ADMIN_ID:
+        translated_text = ""
+        # If message contains text processing sections, capture and translate them safely
+        if "qisqacha mazmuni" in text.lower() or "asosiy content" in text.lower():
+            try:
+                translated_sections = process_and_translate_sections(text, "en")
+                if translated_sections:
+                    translated_text = f"\n\n🇬🇧 <b>Translation (English):</b>\n{translated_sections}"
+            except Exception as ex:
+                logging.error(f"Error translating sections: {ex}")
+
         admin_msg = (
             f"📩 <b>YANGI MUROJAAT / XABAR:</b>\n"
             f"👤 <b>Yuboruvchi:</b> {user.first_name} {user.last_name or ''}\n"
             f"📲 <b>Username:</b> @{user.username or 'yoq'}\n"
             f"🆔 <b>ID:</b> <code>{user.id}</code>\n\n"
             f"💬 <b>Xabar:</b>\n{text}"
+            f"{translated_text}"
         )
-        await context.bot.send_message(chat_id=ADMIN_ID, text=admin_msg, parse_mode='HTML')
+
+        # If the user sent a photo/media, forward it with the admin_msg as caption
+        if update.message.photo:
+            # Send photo with caption
+            photo_file = update.message.photo[-1].file_id
+            await context.bot.send_photo(chat_id=ADMIN_ID, photo=photo_file, caption=admin_msg, parse_mode='HTML')
+        else:
+            await context.bot.send_message(chat_id=ADMIN_ID, text=admin_msg, parse_mode='HTML')
+
         await update.message.reply_text("✅ Xabaringiz adminga yetkazildi. Tez orada javob beramiz!")
 
 def main():
