@@ -6,8 +6,17 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-define('BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE');
-define('WEBHOOK_URL', 'https://doctoramed.uz/doctora/bot.php');
+// Safe environment loading helper
+function get_env($key, $default = null) {
+    $val = getenv($key);
+    if ($val !== false) {
+        return $val;
+    }
+    return $default;
+}
+
+define('BOT_TOKEN', get_env('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'));
+define('WEBHOOK_URL', get_env('TELEGRAM_WEBAPP_URL', 'https://doctoramed.uz/doctora/') . 'bot.php');
 
 $api_url = "https://api.telegram.org/bot" . BOT_TOKEN . "/setWebhook?url=" . urlencode(WEBHOOK_URL);
 
@@ -27,6 +36,6 @@ echo json_encode([
     'telegram_response' => $res_data,
     'status' => (isset($res_data['ok']) && $res_data['ok']) ? 'SUCCESS' : 'FAILED',
     'message' => (isset($res_data['ok']) && $res_data['ok']) 
-        ? 'Webhook muvaffaqiyatli o\'rnatildi! Endi botingiz https://doctoramed.uz/bot.php orqali ishlaydi.' 
+        ? 'Webhook muvaffaqiyatli o\'rnatildi! Endi botingiz ' . WEBHOOK_URL . ' orqali ishlaydi.'
         : 'Xatolik yuz berdi. Bot tokenini yoki HTTPS havolani tekshiring.'
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

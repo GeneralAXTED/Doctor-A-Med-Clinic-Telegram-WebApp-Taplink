@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+// Safely require the TextProcessor if the file exists at root
+if (file_exists(base_path('text_processor.php'))) {
+    require_once base_path('text_processor.php');
+}
+
 class TelegramBotController extends Controller
 {
     private function getBotToken()
     {
-        return config('services.telegram.bot_token', env('TELEGRAM_BOT_TOKEN', '8392684494:AAEZkBUTWBazQcQXWYyP61tmXsUJgzS6XHE'));
+        return config('services.telegram.bot_token', env('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'));
     }
 
     private function getAdminId()
@@ -36,12 +41,16 @@ class TelegramBotController extends Controller
 
         $message = $update['message'];
         $chatId = $message['chat']['id'];
-        $text = trim($message['text'] ?? '');
-        $from = $message['from'];
+        $text = trim($message['text'] ?? $message['caption'] ?? '');
+        $from = $message['from'] ?? [];
         $firstName = htmlspecialchars($from['first_name'] ?? 'Foydalanuvchi');
         $lastName = htmlspecialchars($from['last_name'] ?? '');
-        $username = isset($from['username']) ? '@' . $from['username'] : 'ID: ' . $from['id'];
-        $userId = $from['id'];
+        $username = isset($from['username']) ? '@' . $from['username'] : 'ID: ' . ($from['id'] ?? 'unknown');
+        $userId = $from['id'] ?? null;
+
+        if (!$userId) {
+            return response()->json(['status' => 'No user ID']);
+        }
 
         // 1. Handle /start Command
         if ($text === '/start') {
@@ -74,7 +83,7 @@ class TelegramBotController extends Controller
         // 2. Handle Admin Reply to User
         if ($userId == $this->getAdminId() && isset($message['reply_to_message'])) {
             $replyTo = $message['reply_to_message'];
-            $replyText = $replyTo['text'] ?? '';
+            $replyText = $replyTo['text'] ?? $replyTo['caption'] ?? '';
 
             if (preg_match('/ID:\s*<code>(\d+)<\/code>/i', $replyText, $matches)) {
                 $targetId = $matches[1];
@@ -86,11 +95,27 @@ class TelegramBotController extends Controller
 
         // 3. Direct Messages from Normal Users -> Forward to Admin ID
         if ($userId != $this->getAdminId()) {
+            $translatedText = "";
+            // Detect and translate text processing sections
+            if (stripos($text, 'qisqacha mazmuni') !== false || stripos($text, 'asosiy content') !== false) {
+                if (class_exists('TextProcessor')) {
+                    try {
+                        $translatedSections = \TextProcessor::processAndTranslateSections($text, 'en');
+                        if (!empty($translatedSections)) {
+                            $translatedText = "\n\n🇬🇧 <b>Translation (English):</b>\n" . $translatedSections;
+                        }
+                    } catch (\Exception $ex) {
+                        // Safe ignore
+                    }
+                }
+            }
+
             $adminMsg = "📩 <b>YANGI MUROJAAT / XABAR:</b>\n"
                 . "👤 <b>Yuboruvchi:</b> {$firstName} {$lastName}\n"
                 . "📲 <b>Profil:</b> {$username}\n"
                 . "🆔 <b>ID:</b> <code>{$userId}</code>\n\n"
-                . "💬 <b>Xabar:</b>\n" . htmlspecialchars($text);
+                . "💬 <b>Xabar:</b>\n" . htmlspecialchars($text)
+                . $translatedText;
 
             $this->sendMessage($this->getAdminId(), $adminMsg);
             $this->sendMessage($chatId, "✅ Xabaringiz adminga yetkazildi. Tez orada javob beramiz!");
